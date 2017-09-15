@@ -182,7 +182,32 @@
     </li>
   </ul>
 <script>
+  // we spread because querySelectorAll returns a node list. spreading the nodeList into an array gives us an array
+  // can also use Array.from
+  // const timeNodes = Array.from(document.querySelectorAll('[data-time]'));
+  const timeNodes = [...document.querySelectorAll('[data-time]')];
+  // dataset object holds all of our custom data attributes
+  const seconds = timeNodes
+    .map(time => time.dataset.time)
+    .map(timeString => {
+      // destructure full string into mini arrays of minutes and seconds strings
+      const [mins, secs] = timeString.split(':').map(parseFloat);
+      // now getting it into just seconds
+      return (mins * 60) + secs;
+    })
+    // reduce takes in an array and returns whatever you want -- in this case a big number
+    .reduce((total, nextSeconds) => total + nextSeconds);
 
+    let secondsLeft = seconds;
+    const hours = Math.floor(secondsLeft / 3600);
+    // secondsLeft is changing as we take some of them off to add to hours and minutes etc.
+    // on the line below, since 3600 secs is an hour, using the % operator, lets us know how many seconds aren't
+    // going into a full hour
+    secondsLeft = secondsLeft % 3600;
+    const minutes = Math.floor(secondsLeft / 60);
+    secondsLeft = secondsLeft % 60;
+
+    console.log(hours, minutes, secondsLeft);
 </script>
 </body>
 </html>
